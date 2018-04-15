@@ -1,6 +1,6 @@
 <?php
 return [
-    'mysql' => [
+    'mysql' => [ //the default pool (driver)
         'driver' => 'mysql',
         'host' => 'localhost',
         'dbname' => 'mydatabase1',

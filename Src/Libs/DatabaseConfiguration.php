@@ -1,12 +1,12 @@
 <?php
 namespace Src\Libs;
 
-use Src\Config\ConfigManager;
-use Src\Config\OptionResolver;
+use Src\Core\Config\ConfigManager;
+use Src\Core\Config\OptionResolver;
 
 class DatabaseConfiguration
 {
-    private $poolName;
+    private $poolName = 'mysql';
     private $dbConfig;
 
     public function __construct($poolName)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Config;
+namespace Src\Core\Config;
 
 use Src\Core\Exceptions\AccessException;
 use Src\Core\Exceptions\UndefinedOptionsException;

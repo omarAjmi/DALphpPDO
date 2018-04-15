@@ -1,5 +1,5 @@
 <?php
-namespace Src\Config;
+namespace Src\Core\Config;
 
 class ConfigManager
 {
@@ -20,7 +20,7 @@ class ConfigManager
         try {
             $argsNum = func_num_args();
             if ($argsNum > 2) {
-                throw new Exception("SETUP ERROR: configuration manager can accept only up to 2 parameters,'$argsNum' given!");
+                throw new \Exception("SETUP ERROR: configuration manager can accept only up to 2 parameters,'$argsNum' given!");
             }
             $this->configureOptions($filePath, $location);
             $this->parseConfigs();
