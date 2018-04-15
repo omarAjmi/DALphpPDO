@@ -287,7 +287,7 @@ class ConfigManager
                 $content .= json_encode(serialize($this->configs));
                 break;
             case 'INI':
-                $content .= '; @file generator: Xenomium "' . get_class($this) . '" Class' . PHP_EOL;
+                $content .= '; @file generator: Omar A.Ajmi "' . get_class($this) . '" Class' . PHP_EOL;
                 $content .= '; @Last Update: ' . date('Y-m-d H:i:s') . PHP_EOL;
                 $content .= PHP_EOL;
                 foreach ($this->configs as $section => $array) {
