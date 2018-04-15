@@ -58,7 +58,7 @@ class DatabaseConfiguration
             $dbParams['prepare'] = isset($dbParams['prepare']) ? true : false;
             $dbParams['persistent'] = isset($dbParams['persistent']) ? true : false;
             
-            $optionResolver = new \PhpOptionResolver();
+            $optionResolver = new OptionResolver();
             $optionResolver->setDefaults($this->getDefaults());
             $OptionResolver->setRequired(['dbname', 'driver', 'host', 'password', 'user']);
             $OptionResolver->setAllowedValues('fetchmode', ['array', 'object']);
