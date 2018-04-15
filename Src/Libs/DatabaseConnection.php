@@ -3,6 +3,7 @@ namespace Src\Libs;
 
 use Src\Libs\DatabaseConfiguration;
 
+
 class DatabaseConnection
 {
     private $configuration;

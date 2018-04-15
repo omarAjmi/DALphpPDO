@@ -3,7 +3,6 @@ namespace Src\Libs;
 
 use Src\Config\ConfigManager;
 
-
 class DatabaseConfiguration
 {
     private $poolName;
@@ -50,7 +49,7 @@ class DatabaseConfiguration
 
             $DS = DIRECTORY_SEPARATOR;
             $configFilePath = dirname(__DIR__) . $DS . 'Config' . $DS . 'Setting.php';
-            if (! $setup = new ConfigManager($configFilePath) ) {
+            if (!$setup = new ConfigManager($configFilePath) ) {
                 throw new \Exception("Configuration file not found!");
             }
             
@@ -59,7 +58,7 @@ class DatabaseConfiguration
             $dbParams['prepare'] = isset($dbParams['prepare']) ? true : false;
             $dbParams['persistent'] = isset($dbParams['persistent']) ? true : false;
             
-            $optionResolver = new PhpOptionResolver();
+            $optionResolver = new \PhpOptionResolver();
             $optionResolver->setDefaults($this->getDefaults());
             $OptionResolver->setRequired(['dbname', 'driver', 'host', 'password', 'user']);
             $OptionResolver->setAllowedValues('fetchmode', ['array', 'object']);

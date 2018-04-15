@@ -1,8 +1,6 @@
 <?php
 namespace Src\Core;
 
-use Src\Libs\DatabaseConnection;
-
 class QueryBuilderBase
 {
 
@@ -163,7 +161,7 @@ class QueryBuilderBase
     {
         try {
             if (empty($key)) {
-                throw new \Exception("paraeter key is empty");
+                throw new \Exception("parameter key is empty");
             } else {
                 $this->SQLParams[$key] = $value;
             }
@@ -309,7 +307,7 @@ class QueryBuilderBase
      *
      * @param null $delete
      * @param null $alias
-     * @return $this|IrivenPHPQueryBuilder
+     * @return $this|QueryBuilderBase
      */
     public function delete($delete = null, $alias = null)
     {
@@ -339,7 +337,7 @@ class QueryBuilderBase
      *
      * @param null $update
      * @param null $alias
-     * @return $this|IrivenPHPQueryBuilder
+     * @return $this|QueryBuilderBase
      */
     public function update($update = null, $alias = null)
     {
@@ -371,7 +369,7 @@ class QueryBuilderBase
      * </code>
      *
      * @param null $insert
-     * @return $this|IrivenPHPQueryBuilder
+     * @return $this|QueryBuilderBase
      */
     public function insert($insert = null)
     {
@@ -399,7 +397,7 @@ class QueryBuilderBase
      * @param string      $from  The table.
      * @param string|null $alias The alias of the table.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function from($from, $alias = null)
     {
@@ -423,7 +421,7 @@ class QueryBuilderBase
      * @param $join
      * @param $alias
      * @param null $condition
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function join($fromAlias, $join, $alias, $condition = null)
     {
@@ -444,7 +442,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function crossJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -472,7 +470,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function fullJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -500,7 +498,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function fullOuterJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -528,7 +526,7 @@ class QueryBuilderBase
      * @param $join
      * @param $alias
      * @param null $condition
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function innerJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -557,7 +555,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function leftJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -585,7 +583,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function leftLinearJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -613,7 +611,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function leftOuterJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -641,7 +639,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function linearJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -669,7 +667,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function naturalJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -698,7 +696,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function outerJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -726,7 +724,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function rightJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -754,7 +752,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function rightLinearJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -782,7 +780,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function rightOuterJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -810,7 +808,7 @@ class QueryBuilderBase
      * @param string $alias     The alias of the join table.
      * @param string $condition The condition for the join.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function unionJoin($fromAlias, $join, $alias, $condition = null)
     {
@@ -836,7 +834,7 @@ class QueryBuilderBase
      * @param string $key   The column to set.
      * @param string $value The value, expression, placeholder, etc.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function set($key, $value = null)
     {
@@ -872,7 +870,7 @@ class QueryBuilderBase
      *
      * @param mixed $predicates The restriction predicates.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function where($predicates)
     {
@@ -898,7 +896,7 @@ class QueryBuilderBase
      * @param mixed $where The query restrictions.
      *
      * @param $where
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function andWhere($where)
     {
@@ -929,7 +927,7 @@ class QueryBuilderBase
      *
      * @param mixed $where The WHERE SQLStatement.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      *
      * @see where()
      */
@@ -960,7 +958,7 @@ class QueryBuilderBase
      *
      * @param mixed $groupBy The grouping expression.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function groupBy($groupBy)
     {
@@ -987,7 +985,7 @@ class QueryBuilderBase
      *
      * @param mixed $groupBy The grouping expression.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function addGroupBy($groupBy)
     {
@@ -1041,7 +1039,7 @@ class QueryBuilderBase
      * </code>
      *
      * @param array $values
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function values(array $values)
     {
@@ -1054,7 +1052,7 @@ class QueryBuilderBase
      *
      * @param mixed $having The restriction over the groups.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function having($having)
     {
@@ -1071,7 +1069,7 @@ class QueryBuilderBase
      *
      * @param mixed $having The restriction to append.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function andHaving($having)
     {
@@ -1094,7 +1092,7 @@ class QueryBuilderBase
      *
      * @param mixed $having The restriction to add.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function orHaving($having)
     {
@@ -1118,7 +1116,7 @@ class QueryBuilderBase
      * @param string $sort  The ordering expression.
      * @param string $order The ordering direction.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function orderBy($sort, $order = null)
     {
@@ -1131,7 +1129,7 @@ class QueryBuilderBase
      * @param string $sort  The ordering expression.
      * @param string $order The ordering direction.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function addOrderBy($sort, $order = null)
     {
@@ -1163,7 +1161,7 @@ class QueryBuilderBase
     /**
      * Resets SQL parts.
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     private function resetSQLBlocks()
     {
@@ -1178,7 +1176,7 @@ class QueryBuilderBase
      *
      * @param string $BlockName
      *
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function resetSQLBlock($BlockName)
     {
@@ -1216,7 +1214,7 @@ class QueryBuilderBase
     /**
      * @param $limit
      * @param int $offset
-     * @return IrivenPHPQueryBuilder
+     * @return QueryBuilderBase
      */
     public function limit($limit, $offset = 0)
     {
