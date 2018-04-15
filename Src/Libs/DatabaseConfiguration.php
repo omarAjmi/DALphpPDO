@@ -2,6 +2,7 @@
 namespace Src\Libs;
 
 use Src\Config\ConfigManager;
+use Src\Config\OptionResolver;
 
 class DatabaseConfiguration
 {
@@ -60,13 +61,13 @@ class DatabaseConfiguration
             
             $optionResolver = new OptionResolver();
             $optionResolver->setDefaults($this->getDefaults());
-            $OptionResolver->setRequired(['dbname', 'driver', 'host', 'password', 'user']);
-            $OptionResolver->setAllowedValues('fetchmode', ['array', 'object']);
-            $OptionResolver->addAllowedValues('driver', ['mysql', 'pgsql', 'sqlite', 'oracle', 'sqlsrv', 'mssql', 'sqlserver', 'ibm', 'db2', 'sybase', 'odbc']);
-            $OptionResolver->setAllowedTypes('port', 'integer');
-            $OptionResolver->setAllowedTypes('persistent', 'bool');
-            $OptionResolver->setAllowedTypes('prepare', 'bool');
-            $dbParams = $OptionResolver->resolve($dbParams);
+            $optionResolver->setRequired(['dbname', 'driver', 'host', 'password', 'user']);
+            $optionResolver->setAllowedValues('fetchmode', ['array', 'object']);
+            $optionResolver->addAllowedValues('driver', ['mysql', 'pgsql', 'sqlite', 'oracle', 'sqlsrv', 'mssql', 'sqlserver', 'ibm', 'db2', 'sybase', 'odbc']);
+            $optionResolver->setAllowedTypes('port', 'integer');
+            $optionResolver->setAllowedTypes('persistent', 'bool');
+            $optionResolver->setAllowedTypes('prepare', 'bool');
+            $dbParams = $optionResolver->resolve($dbParams);
             $this->dbConfig->add([$this->dbPoolName => $dbParams]);
             return $dbParams;
         } catch(\Exception $e) {
