@@ -1,3 +1,10 @@
+/**
+ * @author Omar A.Ajmi
+ * @email devdevoops@gmail.com
+ * @create date 2018-04-15 19:54:19
+ * @modify date 2018-04-16 04:19:42
+ * @desc [description]
+*/
 <?php
 return [
     'mysql' => [ //the default pool (driver)

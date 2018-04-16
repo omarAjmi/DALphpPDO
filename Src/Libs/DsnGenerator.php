@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Omar A.Ajmi
+ * @email devdevoops@gmail.com
+ * @create date 2018-04-14 19:20:27
+ * @modify date 2018-04-16 04:27:44
+ * @desc [description]
+ */
 namespace App\Src\Libs;
 
 use App\Src\Libs\DatabaseConnection;

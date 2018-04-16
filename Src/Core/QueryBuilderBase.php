@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Omar A.Ajmi
+ * @email devdevoops@gmail.com
+ * @create date 2018-04-14 15:56:37
+ * @modify date 2018-04-16 04:22:17
+ * @desc [description]
+*/
 namespace App\Src\Core;
 
 class QueryBuilderBase
