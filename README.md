@@ -21,9 +21,9 @@ configurations residesin the **/Settings.php** file.
     'mysql'  =>  [  //the default pool (driver)
 	    'driver'  =>  'mysql',
 	    'host'  =>  'localhost',
-	    'dbname'  =>  'sys',
-	    'user'  =>  'root',
-	    'password'  =>  'toor',
+	    'dbname'  =>  'database_name',
+	    'user'  =>  'user',
+	    'password'  =>  'passwd',
 	    'prefix'  =>  'DB1_',
 	    'port'  =>  3306,
 	    'persistent'  =>  1,
