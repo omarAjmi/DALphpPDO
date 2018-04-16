@@ -8,7 +8,10 @@
 */
 namespace App\Src\Core;
 
+require 'Expressions/CompositeExpression.php';
+
 use App\Src\Libs\DatabaseConnection;
+use App\Src\Core\Expressions\CompositeExpression;
 
 class QueryBuilderBase
 {
@@ -171,7 +174,6 @@ class QueryBuilderBase
     {
         try {
             $connection = $this->getConnection();
-            //die(var_dump())
             $statement = $connection->prepare($this->getQueryString());
             if ($this->SQLParams)
                 $statement->execute($this->quote($this->SQLParams));
@@ -457,10 +459,10 @@ class QueryBuilderBase
      */
     public function from($from, $alias = null)
     {
-        return $this->addSQLBlock('from', array(
+        return $this->addSQLBlock('from', [
             'table' => $from,
             'alias' => $alias
-        ), true);
+        ], true);
     }
 
     /**

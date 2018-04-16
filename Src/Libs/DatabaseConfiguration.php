@@ -50,7 +50,7 @@ class DatabaseConfiguration
     {
         try {
             if (!$this->PDOInstance instanceof \PDO)
-                throw new \Exception('Aucune PDOInstanceion n\'a été établie avec la base de donnée.');
+                throw new \Exception('No PDOInstance has been made with the connection.');
             if (is_array($value)) {
                 $return = [];
                 foreach ($value as $col => $_)
