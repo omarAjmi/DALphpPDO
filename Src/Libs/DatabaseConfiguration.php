@@ -3,8 +3,10 @@ namespace App\Src\Libs;
 
 require __DIR__."/../Core/Config/ConfigManager.php";
 require __DIR__. "/../Core/Config/OptionResolver.php";
+require __DIR__. "/../Core/Data/DataCollector.php";
 
 
+use App\Src\Core\Data\DataCollector;
 use App\Src\Core\Config\ConfigManager;
 use App\Src\Core\Config\OptionResolver;
 
@@ -29,9 +31,8 @@ class DatabaseConfiguration
     public function __construct(string $poolName)
     {
         $this->poolName = $poolName;
-        //$this->dbConfig = new dataCollector();
+        $this->dbConfig = new DataCollector();
         $this->load();
-        return $this;
     }
     /**
      * @param $value
@@ -85,7 +86,7 @@ class DatabaseConfiguration
             $optionResolver->setAllowedTypes('persistent', 'bool');
             $optionResolver->setAllowedTypes('prepare', 'bool');
             $dbParams = $optionResolver->resolve($dbParams);
-            $this->dbConfig->add([$this->dbPoolName => $dbParams]);
+            $this->dbConfig->add([$this->poolName => $dbParams]);
             return $dbParams;
         } catch(\Exception $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);

@@ -1,10 +1,15 @@
 <?php
 namespace App\Src\Libs;
 
+require "DsnGenerator.php";
+require __DIR__ . "/../Core/QueryBuilderBase.php";
+//require __DIR__ . "/../Core/Exceptions/ExpressionBuilder.php";
+
 use App\Src\Libs\DsnGenerator;
 use App\Src\Libs\DatabaseConfiguration;
 use App\Src\Core\Exceptions\ExpressionBuilder;
 use App\Src\Core\QueryBuilderBase;
+use \PDO;
 
 class DatabaseConnection
 {
@@ -85,7 +90,7 @@ class DatabaseConnection
     {
         if (!$this->PDOInstance) {
             try {
-                $dsn = $this->buiddDsn();
+                $dsn = $this->buildDsn();
                 $Options = $this->resolveOptions();
                 if (!$this->PDOInstance = new PDO($dsn, $this->configuration['user'], $this->configuration['password'], $Options['attr']))
                     throw new \PDOException('Connection to the database could not be established');
@@ -212,6 +217,16 @@ class DatabaseConnection
             trigger_error($a->getMessage(), E_USER_ERROR);
         }
         return $this->PDOInstance;
+    }
+
+    /**
+     * gets configurations
+     *
+     * @return array
+     */
+    public function getConfigurations()
+    {
+        return $this->configuration;
     }
 
     /**

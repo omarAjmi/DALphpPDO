@@ -3,9 +3,9 @@ return [
     'mysql' => [ //the default pool (driver)
         'driver' => 'mysql',
         'host' => 'localhost',
-        'dbname' => 'mydatabase1',
-        'user' => 'myusername1',
-        'password' => 'mypassword',
+        'dbname' => 'sys',
+        'user' => 'root',
+        'password' => 'toor',
         'prefix' => 'DB1_',
         'port' => 3306,
         'persistent' => 1,

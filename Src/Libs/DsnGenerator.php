@@ -14,14 +14,14 @@ class DsnGenerator
     public function getSqlsrvDNS(DatabaseConnection $conn)
     {
         $dsn = 'sqlsrv:server=';
-        if (isset($conn->configuration['host']))
-            $dsn .= $conn->configuration['host'];
-        if (isset($conn->configuration['port']) && !empty($conn->configuration['port']))
-            $dsn .= ',' . $conn->configuration['port'];
-        if (isset($conn->configuration['dbname']))
-            $dsn .= ';Database=' . $conn->configuration['dbname'];
-        if (isset($conn->configuration['MultipleActiveResultSets']))
-            $dsn .= '; MultipleActiveResultSets=' . ($conn->configuration['MultipleActiveResultSets'] ? 'true' : 'false');
+        if (isset($conn->getConfigurations()['host']))
+            $dsn .= $conn->getConfigurations()['host'];
+        if (isset($conn->getConfigurations()['port']) && !empty($conn->getConfigurations()['port']))
+            $dsn .= ',' . $conn->getConfigurations()['port'];
+        if (isset($conn->getConfigurations()['dbname']))
+            $dsn .= ';Database=' . $conn->getConfigurations()['dbname'];
+        if (isset($conn->getConfigurations()['MultipleActiveResultSets']))
+            $dsn .= '; MultipleActiveResultSets=' . ($conn->getConfigurations()['MultipleActiveResultSets'] ? 'true' : 'false');
         return $dsn;
     }
 
@@ -34,12 +34,12 @@ class DsnGenerator
     public function getDblibDNS(DatabaseConnection $conn)
     {
         $dsn = 'dblib:host=';
-        if (isset($conn->configuration['host']))
-            $dsn .= $conn->configuration['host'];
-        if (isset($conn->configuration['port']) && !empty($conn->configuration['port']))
-            $dsn .= ':' . $conn->configuration['port'];
-        if (isset($conn->configuration['dbname']))
-            $dsn .= ';dbname=' . $conn->configuration['dbname'];
+        if (isset($conn->getConfigurations()['host']))
+            $dsn .= $conn->getConfigurations()['host'];
+        if (isset($conn->getConfigurations()['port']) && !empty($conn->getConfigurations()['port']))
+            $dsn .= ':' . $conn->getConfigurations()['port'];
+        if (isset($conn->getConfigurations()['dbname']))
+            $dsn .= ';dbname=' . $conn->getConfigurations()['dbname'];
         return $dsn;
     }
 
@@ -52,8 +52,8 @@ class DsnGenerator
     public function getSqliteDNS(DatabaseConnection $conn)
     {
         $dsn = 'sqlite:';
-        if (isset($conn->configuration['path'])) $dsn .= $conn->configuration['path'];
-        elseif (isset($conn->configuration['memory']))
+        if (isset($conn->getConfigurations()['path'])) $dsn .= $conn->getConfigurations()['path'];
+        elseif (isset($conn->getConfigurations()['memory']))
             $dsn .= ':memory:';
         return $dsn;
     }
@@ -67,19 +67,19 @@ class DsnGenerator
     public function getPgsqlDNS(DatabaseConnection $conn)
     {
         $dsn = 'pgsql:';
-        if (isset($conn->configuration['host']) && !empty($conn->configuration['host']))
-            $dsn .= 'host=' . $conn->configuration['host'] . ' ';
-        if (isset($conn->configuration['port']) && !empty($conn->configuration['port']))
-            $dsn .= 'port=' . $conn->configuration['port'] . ' ';
-        if (isset($conn->configuration['dbname']))
-            $dsn .= 'dbname=' . $conn->configuration['dbname'] . ' ';
+        if (isset($conn->getConfigurations()['host']) && !empty($conn->getConfigurations()['host']))
+            $dsn .= 'host=' . $conn->getConfigurations()['host'] . ' ';
+        if (isset($conn->getConfigurations()['port']) && !empty($conn->getConfigurations()['port']))
+            $dsn .= 'port=' . $conn->getConfigurations()['port'] . ' ';
+        if (isset($conn->getConfigurations()['dbname']))
+            $dsn .= 'dbname=' . $conn->getConfigurations()['dbname'] . ' ';
         else
                     // Used for temporary connections to allow operations like dropping the database currently connected to.
                     // Connecting without an explicit database does not work, therefore "template1" database is used
                     // as it is certainly present in every server setup.
         $dsn .= 'dbname=template1' . ' ';
-        if (isset($conn->configuration['sslmode']))
-            $dsn .= 'sslmode=' . $conn->configuration['sslmode'] . ' ';
+        if (isset($conn->getConfigurations()['sslmode']))
+            $dsn .= 'sslmode=' . $conn->getConfigurations()['sslmode'] . ' ';
         return $dsn;
     }
 
@@ -103,13 +103,13 @@ class DsnGenerator
     public function getIbmDNS(DatabaseConnection $conn)
     {
         $dsn = 'ibm:DRIVER={IBM DB2 ODBC DRIVER};';
-        if (isset($conn->configuration['host']))
-            $dsn .= 'HOSTNAME=' . $conn->configuration['host'] . ';';
-        if (isset($conn->configuration['port']))
-            $dsn .= 'PORT=' . $conn->configuration['port'] . ';';
+        if (isset($conn->getConfigurations()['host']))
+            $dsn .= 'HOSTNAME=' . $conn->getConfigurations()['host'] . ';';
+        if (isset($conn->getConfigurations()['port']))
+            $dsn .= 'PORT=' . $conn->getConfigurations()['port'] . ';';
         $dsn .= 'PROTOCOL=TCPIP;';
-        if (isset($conn->configuration['dbname']))
-            $dsn .= 'DATABASE=' . $conn->configuration['dbname'] . ';';
+        if (isset($conn->getConfigurations()['dbname']))
+            $dsn .= 'DATABASE=' . $conn->getConfigurations()['dbname'] . ';';
         return $dsn;
     }
 
@@ -122,16 +122,16 @@ class DsnGenerator
     public function getMysqlDNS(DatabaseConnection $conn)
     {
         $dsn = 'mysql:';
-        if (isset($conn->configuration['host']) && !empty($conn->configuration['host']))
-            $dsn .= 'host=' . $conn->configuration['host'] . ';';
-        if (isset($conn->configuration['port']))
-            $dsn .= 'port=' . $conn->configuration['port'] . ';';
-        if (isset($conn->configuration['dbname']))
-            $dsn .= 'dbname=' . $conn->configuration['dbname'] . ';';
-        if (isset($conn->configuration['unix_socket']))
-            $dsn .= 'unix_socket=' . $conn->configuration['unix_socket'] . ';';
-        if (isset($conn->configuration['charset']))
-            $dsn .= 'charset=' . $conn->configuration['charset'] . ';';
+        if (isset($conn->getConfigurations()['host']) and !empty($conn->getConfigurations()['host']))
+            $dsn .= 'host=' . $conn->getConfigurations()['host'] . ';';
+        if (isset($conn->getConfigurations()['port']))
+            $dsn .= 'port=' . $conn->getConfigurations()['port'] . ';';
+        if (isset($conn->getConfigurations()['dbname']))
+            $dsn .= 'dbname=' . $conn->getConfigurations()['dbname'] . ';';
+        if (isset($conn->getConfigurations()['unix_socket']))
+            $dsn .= 'unix_socket=' . $conn->getConfigurations()['unix_socket'] . ';';
+        if (isset($conn->getConfigurations()['charset']))
+            $dsn .= 'charset=' . $conn->getConfigurations()['charset'] . ';';
         return $dsn;
     }
 }

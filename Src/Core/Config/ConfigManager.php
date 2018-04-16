@@ -23,7 +23,7 @@ class ConfigManager
                 throw new \Exception("SETUP ERROR: configuration manager can accept only up to 2 parameters,'$argsNum' given!");
             }
             $this->configureOptions($filePath, $location);
-            $this->parseConfigs($this->options);
+            $this->parseConfigs($this->options);    
         } catch (\Exception $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);
         }
