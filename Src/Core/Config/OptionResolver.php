@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @author Omar A.Ajmi
+ * @email devdevoops@gmail.com
+ * @create date 2018-04-15 19:49:27
+ * @modify date 2018-04-16 04:26:15
+ * @desc [description]
+ */
+
 namespace App\Src\Core\Config;
 
 use App\Src\Core\Exceptions\AccessException;
