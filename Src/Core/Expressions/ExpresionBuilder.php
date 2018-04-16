@@ -1,7 +1,7 @@
 <?php
-namespace Src\Core\Exceptions;
+namespace App\Src\Core\Exceptions;
 
-use Src\Libs\DatabaseConnection;
+use App\Src\Libs\DatabaseConnection;
 
 
 class ExpressionBuilder
@@ -16,7 +16,7 @@ class ExpressionBuilder
     /**
      * connection instance
      *
-     * @var Src\Libs\DatabaseConnection
+     * @varApp\Src\Libs\DatabaseConnection
      */
     private $DBInstance;
 

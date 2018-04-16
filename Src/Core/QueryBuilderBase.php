@@ -1,5 +1,5 @@
 <?php
-namespace Src\Core;
+namespace App\Src\Core;
 
 class QueryBuilderBase
 {

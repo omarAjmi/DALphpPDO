@@ -1,5 +1,5 @@
 <?php
-namespace Src\Core\Config;
+namespace App\Src\Core\Config;
 
 class ConfigManager
 {
@@ -23,7 +23,7 @@ class ConfigManager
                 throw new \Exception("SETUP ERROR: configuration manager can accept only up to 2 parameters,'$argsNum' given!");
             }
             $this->configureOptions($filePath, $location);
-            $this->parseConfigs();
+            $this->parseConfigs($this->options);
         } catch (\Exception $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);
         }
@@ -44,7 +44,10 @@ class ConfigManager
     private function configureOptions(string $fileName, string $location = null)
     {
         try {
-            if (!isset($filename, $location) or !is_string($filename) or !is_string($location)) {
+            if (isset($location) and !is_string($location)) {
+                throw new \Exception("configuring options takes only strings as parameters");
+            }
+            if (!isset($fileName) or !is_string($fileName)) {
                 throw new \Exception("configuring options takes only strings as parameters");
             }
             $default = [
@@ -56,10 +59,10 @@ class ConfigManager
             if ($location)
                 $options['directory'] = rtrim($this->normalize($location), DIRECTORY_SEPARATOR);
             else {
-                if (basename($file) !== $file)
-                    $options['directory'] = rtrim($this->normalize(pathinfo($file, PATHINFO_DIRNAME)), DIRECTORY_SEPARATOR);
+                if (basename($fileName) !== $fileName)
+                    $options['directory'] = rtrim($this->normalize(pathinfo($fileName, PATHINFO_DIRNAME)), DIRECTORY_SEPARATOR);
             }
-            $options['filename'] = basename($file);
+            $options['filename'] = basename($fileName);
             if (strpos($options['filename'], '.') !== false)
                 $options['driver'] = strtoupper(pathinfo($options['filename'], PATHINFO_EXTENSION));
             else
@@ -113,8 +116,9 @@ class ConfigManager
     {
         try {
             $this->configFilePath = $this->normalize($opts['directory'] . DIRECTORY_SEPARATOR . $opts['filename']);
-            if (!file_exists($this->configFilePath))
-                file_put_contents($this->configFilePath, '', LOCK_EX);
+            if (!file_exists($this->configFilePath)) {
+                file_put_contents($this->configFilePath, '', LOCK_NB);
+            }
             switch ($this->options['driver']) {
                 case 'JSON':
                     $this->configs = unserialize(json_decode(file_get_contents($this->configFilePath), true));

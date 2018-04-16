@@ -1,10 +1,10 @@
 <?php
-namespace Src\Libs;
+namespace App\Src\Libs;
 
-use Src\Libs\DsnGenerator;
-use Src\Libs\DatabaseConfiguration;
-use Src\Core\Exceptions\ExpressionBuilder;
-use Src\Core\QueryBuilderBase;
+use App\Src\Libs\DsnGenerator;
+use App\Src\Libs\DatabaseConfiguration;
+use App\Src\Core\Exceptions\ExpressionBuilder;
+use App\Src\Core\QueryBuilderBase;
 
 class DatabaseConnection
 {

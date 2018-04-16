@@ -1,18 +1,35 @@
 <?php
-namespace Src\Libs;
+namespace App\Src\Libs;
 
-use Src\Core\Config\ConfigManager;
-use Src\Core\Config\OptionResolver;
+require __DIR__."/../Core/Config/ConfigManager.php";
+require __DIR__. "/../Core/Config/OptionResolver.php";
+
+
+use App\Src\Core\Config\ConfigManager;
+use App\Src\Core\Config\OptionResolver;
 
 class DatabaseConfiguration
 {
+    const DEFAULT_PARAMETERS = [
+            'driver' => 'mysql',
+            'charset' => 'utf8',
+            'host' => 'localhost',
+            'dbname' => null,
+            'port' => 3306,
+            'password' => null,
+            'user' => null,
+            'prefix' => '',
+            'persistent' => true,
+            'fetchmode' => 'object',
+            'prepare' => true
+    ];
     private $poolName = 'mysql';
     private $dbConfig;
 
-    public function __construct($poolName)
+    public function __construct(string $poolName)
     {
         $this->poolName = $poolName;
-        $this->dbConfig = new dataCollector();
+        //$this->dbConfig = new dataCollector();
         $this->load();
         return $this;
     }
@@ -49,7 +66,7 @@ class DatabaseConfiguration
         try {
 
             $DS = DIRECTORY_SEPARATOR;
-            $configFilePath = dirname(__DIR__) . $DS . 'Config' . $DS . 'Setting.php';
+            $configFilePath = dirname(__DIR__) . '/Settings.php';
             if (!$setup = new ConfigManager($configFilePath) ) {
                 throw new \Exception("Configuration file not found!");
             }
@@ -107,5 +124,15 @@ class DatabaseConfiguration
             endswitch;
         }
         return $port;
+    }
+
+    /**
+     * gets default parameters
+     *
+     * @return array
+     */
+    private function getDefaults()
+    {
+        return self::DEFAULT_PARAMETERS;
     }
 }

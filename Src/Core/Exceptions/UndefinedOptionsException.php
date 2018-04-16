@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Core\Exceptions;
+namespace App\Src\Core\Exceptions;
 /**
  * Exception thrown when an undefined option is passed.
  *

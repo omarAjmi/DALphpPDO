@@ -1,9 +1,9 @@
 <?php
 
-namespace Src\Core\Config;
+namespace App\Src\Core\Config;
 
-use Src\Core\Exceptions\AccessException;
-use Src\Core\Exceptions\UndefinedOptionsException;
+use App\Src\Core\Exceptions\AccessException;
+use App\Src\Core\Exceptions\UndefinedOptionsException;
 
 class OptionResolver implements \ArrayAccess, \Countable
 {
@@ -643,6 +643,184 @@ class OptionResolver implements \ArrayAccess, \Countable
     }
 
     /**
+     * Returns the resolved value of an option.
+     *
+     * @param string $option The option name
+     *
+     * @return mixed The option value
+     *
+     * @throws AccessException           If accessing this method outside of
+     *                                   {@link resolve()}
+     * @throws NoSuchOptionException     If the option is not set
+     * @throws InvalidOptionsException   If the option doesn't fulfill the
+     *                                   specified validation rules
+     * @throws OptionDefinitionException If there is a cyclic dependency between
+     *                                   lazy options and/or normalizers
+     */
+    public function offsetGet($option)
+    {
+        if (!$this->locked) {
+            throw new AccessException('Array access is only supported within closures of lazy options and normalizers.');
+        }
+
+        // Shortcut for resolved options
+        if (array_key_exists($option, $this->resolved)) {
+            return $this->resolved[$option];
+        }
+
+        // Check whether the option is set at all
+        if (!array_key_exists($option, $this->defaults)) {
+            if (!isset($this->defined[$option])) {
+                throw new NoSuchOptionException(sprintf(
+                    'The option "%s" does not exist. Defined options are: "%s".',
+                    $option,
+                    implode('", "', array_keys($this->defined))
+                ));
+            }
+
+            throw new NoSuchOptionException(sprintf(
+                'The optional option "%s" has no value set. You should make sure it is set with "isset" before reading it.',
+                $option
+            ));
+        }
+
+        $value = $this->defaults[$option];
+
+        // Resolve the option if the default value is lazily evaluated
+        if (isset($this->lazy[$option])) {
+            // If the closure is already being called, we have a cyclic
+            // dependency
+            if (isset($this->calling[$option])) {
+                throw new OptionDefinitionException(sprintf(
+                    'The options "%s" have a cyclic dependency.',
+                    implode('", "', array_keys($this->calling))
+                ));
+            }
+
+            // The following section must be protected from cyclic
+            // calls. Set $calling for the current $option to detect a cyclic
+            // dependency
+            // BEGIN
+            $this->calling[$option] = true;
+            try {
+                foreach ($this->lazy[$option] as $closure) {
+                    $value = $closure($this, $value);
+                }
+            }
+            finally {
+                unset($this->calling[$option]);
+            }
+            // END
+        }
+
+        // Validate the type of the resolved option
+        if (isset($this->allowedTypes[$option])) {
+            $valid = false;
+
+            foreach ($this->allowedTypes[$option] as $type) {
+                $type = isset(self::$typeAliases[$type]) ? self::$typeAliases[$type] : $type;
+
+                if (function_exists($isFunction = 'is_' . $type)) {
+                    if ($isFunction($value)) {
+                        $valid = true;
+                        break;
+                    }
+
+                    continue;
+                }
+
+                if ($value instanceof $type) {
+                    $valid = true;
+                    break;
+                }
+            }
+
+            if (!$valid) {
+                throw new InvalidOptionsException(sprintf(
+                    'The option "%s" with value %s is expected to be of type ' .
+                        '"%s", but is of type "%s".',
+                    $option,
+                    $this->formatValue($value),
+                    implode('" or "', $this->allowedTypes[$option]),
+                    $this->formatTypeOf($value)
+                ));
+            }
+        }
+
+        // Validate the value of the resolved option
+        if (isset($this->allowedValues[$option])) {
+            $success = false;
+            $printableAllowedValues = [];
+
+            foreach ($this->allowedValues[$option] as $allowedValue) {
+                if ($allowedValue instanceof \Closure) {
+                    if ($allowedValue($value)) {
+                        $success = true;
+                        break;
+                    }
+
+                    // Don't include closures in the exception message
+                    continue;
+                } elseif ($value === $allowedValue) {
+                    $success = true;
+                    break;
+                }
+
+                $printableAllowedValues[] = $allowedValue;
+            }
+
+            if (!$success) {
+                $message = sprintf(
+                    'The option "%s" with value %s is invalid.',
+                    $option,
+                    $this->formatValue($value)
+                );
+
+                if (count($printableAllowedValues) > 0) {
+                    $message .= sprintf(
+                        ' Accepted values are: %s.',
+                        $this->formatValues($printableAllowedValues)
+                    );
+                }
+
+                throw new InvalidOptionsException($message);
+            }
+        }
+
+        // Normalize the validated option
+        if (isset($this->normalizers[$option])) {
+            // If the closure is already being called, we have a cyclic
+            // dependency
+            if (isset($this->calling[$option])) {
+                throw new OptionDefinitionException(sprintf(
+                    'The options "%s" have a cyclic dependency.',
+                    implode('", "', array_keys($this->calling))
+                ));
+            }
+
+            $normalizer = $this->normalizers[$option];
+
+            // The following section must be protected from cyclic
+            // calls. Set $calling for the current $option to detect a cyclic
+            // dependency
+            // BEGIN
+            $this->calling[$option] = true;
+            try {
+                $value = $normalizer($this, $value);
+            }
+            finally {
+                unset($this->calling[$option]);
+            }
+            // END
+        }
+
+        // Mark as resolved
+        $this->resolved[$option] = $value;
+
+        return $value;
+    }
+
+    /**
      * Returns whether a resolved option with the given name exists.
      *
      * @param string $option The option name
@@ -759,5 +937,82 @@ class OptionResolver implements \ArrayAccess, \Countable
         foreach ($values as $key => $value)
             $values[$key] = $this->formatValue($value);
         return implode(', ', $values);
+    }
+
+    /**
+     * Merges options with the default values stored in the container and
+     * validates them.
+     *
+     * Exceptions are thrown if:
+     *
+     *  - Undefined options are passed;
+     *  - Required options are missing;
+     *  - Options have invalid types;
+     *  - Options have invalid values.
+     *
+     * @param array $options A map of option names to values
+     *
+     * @return array The merged and validated options
+     *
+     * @throws UndefinedOptionsException If an option name is undefined
+     * @throws InvalidOptionsException   If an option doesn't fulfill the
+     *                                   specified validation rules
+     * @throws MissingOptionsException   If a required option is missing
+     * @throws OptionDefinitionException If there is a cyclic dependency between
+     *                                   lazy options and/or normalizers
+     * @throws NoSuchOptionException     If a lazy option reads an unavailable option
+     * @throws AccessException           If called from a lazy option or normalizer
+     */
+    public function resolve(array $options = [])
+    {
+        if ($this->locked) {
+            throw new AccessException('Options cannot be resolved from a lazy option or normalizer.');
+        }
+
+        // Allow this method to be called multiple times
+        $clone = clone $this;
+
+        // Make sure that no unknown options are passed
+        $diff = array_diff_key($options, $clone->defined);
+
+        if (count($diff) > 0) {
+            ksort($clone->defined);
+            ksort($diff);
+
+            throw new UndefinedOptionsException(sprintf(
+                (count($diff) > 1 ? 'The options "%s" do not exist.' : 'The option "%s" does not exist.') . ' Defined options are: "%s".',
+                implode('", "', array_keys($diff)),
+                implode('", "', array_keys($clone->defined))
+            ));
+        }
+
+        // Override options set by the user
+        foreach ($options as $option => $value) {
+            $clone->defaults[$option] = $value;
+            unset($clone->resolved[$option], $clone->lazy[$option]);
+        }
+
+        // Check whether any required option is missing
+        $diff = array_diff_key($clone->required, $clone->defaults);
+
+        if (count($diff) > 0) {
+            ksort($diff);
+
+            throw new MissingOptionsException(sprintf(
+                count($diff) > 1 ? 'The required options "%s" are missing.' : 'The required option "%s" is missing.',
+                implode('", "', array_keys($diff))
+            ));
+        }
+
+        // Lock the container
+        $clone->locked = true;
+
+        // Now process the individual options. Use offsetGet(), which resolves
+        // the option itself and any options that the option depends on
+        foreach ($clone->defaults as $option => $_) {
+            $clone->offsetGet($option);
+        }
+
+        return $clone->resolved;
     }
 }

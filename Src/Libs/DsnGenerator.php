@@ -1,7 +1,7 @@
 <?php
-namespace Src\Libs;
+namespace App\Src\Libs;
 
-use Src\Libs\DatabaseConnection;
+use App\Src\Libs\DatabaseConnection;
 
 class DsnGenerator
 {
