@@ -30,67 +30,67 @@ class ExpressionBuilder
         $this->DBInstance = $conn;
     }
 
-    public function equal(mixed $param1, mixed $param2)
+    public function equal($param1, $param2)
     {
         return $this->compare($param1, self::EQ, $param2);
     }
 
-    public function notEqual(mixed $param1, mixed $param2)
+    public function notEqual($param1, $param2)
     {
         return $this->compare($param1, self::NEQ, $param2);
     }
 
-    public function graterThen(mixed $param1, mixed $param2)
+    public function graterThen($param1, $param2)
     {
         return $this->compare($param1, self::GT, $param2);
     }
 
-    public function graterThenOrEqual(mixed $param1, mixed $param2)
+    public function graterThenOrEqual($param1, $param2)
     {
         return $this->compare($param1, self::GTE, $param2);
     }
 
-    public function lessThen(mixed $param1, mixed $param2)
+    public function lessThen($param1, $param2)
     {
         return $this->compare($param1, self::LT, $param2);
     }
 
-    public function lessThenOrEqual(mixed $param1, mixed $param2)
+    public function lessThenOrEqual($param1, $param2)
     {
         return $this->compare($param1, self::LTE, $param2);
     }
 
-    public function isNull(mixed $param)
+    public function isNull($param)
     {
         return $param . ' IS NULL';
     }
 
-    public function isNotNull(mixed $param)
+    public function isNotNull($param)
     {
         return $param . ' IS NOT NULL';
     }
 
-    public function like(mixed $param1, mixed $param2)
+    public function like($param1, $param2)
     {
         return $this->compare($param1, ' LIKE ', $param2);
     }
 
-    public function notLike(mixed $param1, mixed $param2)
+    public function notLike($param1, $param2)
     {
         return $this->compare($param1, ' LIKE ', $param2);
     }
 
-    public function in(mixed $param1, mixed $param2)
+    public function in($param1, $param2)
     {
         return $this->compare($param1, ' IN ', implode(', ', (array)$param2));
     }
 
-    public function notIn(mixed $param1, mixed $param2)
+    public function notIn($param1, $param2)
     {
         return $this->compare($param1, ' NOT IN ', implode(', ', (array)$param2));
     }
 
-    public function literal(mixed $param)
+    public function literal($param)
     {
         return $this->DBInstance->quote($param);
     }
@@ -112,7 +112,7 @@ class ExpressionBuilder
         return 'EXISTS (' . $subQuery . ') ';
     }
 
-    public function count(mixed $param)
+    public function count($param)
     {
         is_array($param) ?
                         'COUNT (' . implode(',', $param) . ') ' :

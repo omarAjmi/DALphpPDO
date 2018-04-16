@@ -8,6 +8,11 @@
 */
 namespace App\Src\Core;
 
+require 'Expressions/CompositeExpression.php';
+
+use App\Src\Libs\DatabaseConnection;
+use App\Src\Core\Expressions\CompositeExpression;
+
 class QueryBuilderBase
 {
 
@@ -90,7 +95,7 @@ class QueryBuilderBase
     {
         try {
             $conn->getConnection();
-            $this->DBInstance = $conn->PDOInstance;
+            $this->DBInstance = $conn->getConnection();
         } catch (\Exception $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);
         }
@@ -112,7 +117,7 @@ class QueryBuilderBase
      */
     public function getConnection()
     {
-        return $this->DBInstance->getConnection();
+        return $this->DBInstance;
     }
 
     /**
@@ -155,6 +160,52 @@ class QueryBuilderBase
             $this->SQLString = $sql;
             return $this->SQLString;
         }
+    }
+
+    /**
+     * Executes this query using the bound parameters and their types.
+     *
+     * Uses  for select SQLStatements 
+     * for insert, update and delete SQLStatements.
+     *
+     * @return mixed
+     */
+    public function execute()
+    {
+        try {
+            $connection = $this->getConnection();
+            $statement = $connection->prepare($this->getQueryString());
+            if ($this->SQLParams)
+                $statement->execute($this->quote($this->SQLParams));
+            else
+                $statement->execute();
+            switch ($this->SQLType) {
+                case self::INSERT:
+                    $return = $connection->lastInsertId();
+                    break;
+                case self::DELETE:
+                case self::UPDATE:
+                    $return = $statement->rowCount();
+                    break;
+                case self::SELECT:
+                default:
+                    $return = $statement->fetchAll();
+                    break;
+            }
+            $this->resetSQLBlocks();
+            return $return;
+        } catch (\PDOException $ex) {
+            trigger_error($ex->getMessage(), E_USER_ERROR);
+        }
+        return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function executeFirst()
+    {
+        return $this->limit(1, 0)->execute();
     }
 
     /**
@@ -226,7 +277,7 @@ class QueryBuilderBase
      * @param boolean $append
      * @return QueryBuilderBase
      */
-    private function addSQLBlock(string $sqlPartName, mixed $sqlPart, bool $append = false)
+    private function addSQLBlock(string $sqlPartName, $sqlPart, bool $append = false)
     {
         $isArray = is_array($sqlPart);
         $isMultiple = is_array($this->SQLBlocks[$sqlPartName]);
@@ -252,7 +303,7 @@ class QueryBuilderBase
      * @param boolean $isMultiple
      * @return void
      */
-    private function appendSQLBlock(string $sqlPartName, mixed $sqlPart, bool $isArray, bool $isMultiple)
+    private function appendSQLBlock(string $sqlPartName, $sqlPart, bool $isArray, bool $isMultiple)
     {
         if ($sqlPartName == "orderBy" || $sqlPartName == "groupBy" || $sqlPartName == "select" || $sqlPartName == "set") {
             foreach ($sqlPart as $part) {
@@ -275,7 +326,7 @@ class QueryBuilderBase
      * @param mixed $select
      * @return QueryBuilderBase
      */
-    public function select(mixed $select = null)
+    public function select($select = null)
     {
         $this->SQLType = self::SELECT;
         if (empty($select)){
@@ -292,7 +343,7 @@ class QueryBuilderBase
      * @param mixed $select
      * @return QueryBuilderBase
      */
-    public function addSelect(mixed $select = null)
+    public function addSelect($select = null)
     {
         $this->SQLType = self::SELECT;
         if (empty($select)) {
@@ -408,10 +459,10 @@ class QueryBuilderBase
      */
     public function from($from, $alias = null)
     {
-        return $this->addSQLBlock('from', array(
+        return $this->addSQLBlock('from', [
             'table' => $from,
             'alias' => $alias
-        ), true);
+        ], true);
     }
 
     /**
@@ -1332,7 +1383,7 @@ class QueryBuilderBase
      */
     public function __toString()
     {
-        return $this->getQuery();
+        return $this->getQueryString();
     }
 
     /**
